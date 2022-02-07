@@ -3,6 +3,7 @@
 #include <string>
 using namespace std;
 
+//creating a function to confirm users input
 int confirm(){
     int x = 0;
     cout << "press 1 to confirm, else 0 : ";
@@ -10,9 +11,13 @@ int confirm(){
     return x;
 }
 
+//Mask function
+
 void mask(){
     cout << "\n----------------------------------------------------------"<<endl;
 }
+
+//main class
 
 class post{
     public:
@@ -25,7 +30,7 @@ class post{
             forum << text_f;
             forum.close();
         }
-
+    //functin to write a post
         int write(string poster){
             string text;
             cout << "New Post : ";
@@ -41,6 +46,7 @@ class post{
                 cout << "Post unsuccesful";
             }
         }
+    //printing the post
         void print(){
             string posts;
 
@@ -54,6 +60,7 @@ class post{
         string user;
 };
 
+//user authentication class
 class user{
     public:
         int signup(){
@@ -79,19 +86,15 @@ class user{
 
 };
 
+//main
 int main(){
     user user;
     post thread;
     string user_name;
     int login = user.signup();
-    while (login)
+    while (login)                            //if login = true =>
     {
-        user_name = "Ansah";
-        /*
-        string x;
-        cout << "\nPress any key to start"<< endl;
-        cin >> x;
-        */
+        user_name = "User";
         int menu;
         mask();
         cout << " Welcome to SVNIT FORUMS \n" << endl;
