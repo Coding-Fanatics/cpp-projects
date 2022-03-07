@@ -1,13 +1,17 @@
 #include <iostream>
+#include <iomanip>
+#include <cmath>
 #include "Token.h"
 
 //=====================================================================================
 // Token class member functions
 //=====================================================================================
 
-Token::Token(char kind_val='0', double value_val=0)
+Token::Token(char kind_val, double value_val)
     : kind{kind_val}, value{value_val} {}
 
+Token::Token()
+    : Token{0,0} {}
 
 
 //=====================================================================================
@@ -49,7 +53,29 @@ Token Token_stream::get() {
                 return Token{'~',d};
             }
 
-        default:
+        // pi 
+        case 'p':
+            {
+                std::cin >> ch;
+                if(ch=='i')
+                    return Token{PI_CHAR,0};
+                else
+                    throw std::runtime_error("bad format");
+            }
+
+        // eulers constant
+        case 'e':
+            return Token{EULER_CONSTANT_CHAR,0};
+        
+        // a log function
+        case 'l':
+            return Token{ch,0};
+
+        // a square root function
+        case 'r':
+            return Token{ch,0};
+
+        default :
             throw std::runtime_error("Bad token");   // some bad token obtained in input stream
             return Token{};
     }
@@ -61,7 +87,7 @@ Token Token_stream::get() {
 void Token_stream::unget(Token token) {
     if(!isFull) {
         buffer = Token{token.kind,token.value};     // store the token in buffer
-        isFull = true;                               
+        isFull = true;
         return;
     }
     else {
@@ -136,39 +162,246 @@ double term() {
 // read a Primary
 //
 // Grammar for Primary:
+//     -Number
 //     Number
+//     constants like pi, e and so on
 //     '('Expression')'
+//     -'('Expression')'
 double primary() {
     Token token = ts.get();     // receive a token from the input stream
 
-    // the primary is '('Expression')'
-    if(token.kind=='(') {       
-        double d = expression();                // this is an expression
-        Token t = ts.get();
-        if(t.kind!=')')
-            throw std::runtime_error("bad format");      // there is a format error in input
-        else
-            return d;               // everything is fine return d
-        }
-    else if(token.kind=='-') {
-        return -primary();
+    switch(token.kind) {
+        // primary is '('Expression')'
+        case '(':
+            {
+                double d = expression();      // read an expression
+                Token t = ts.get();
+                if(t.kind!=')')
+                    throw std::runtime_error("bad format");
+                else
+                    return d;
+            }
+
+        // primary is -(some number)
+        case SUBTRACT:
+            return -primary();
+
+        // primary is a number
+        case NUM_KIND:
+            return token.value;
+
+        // primary id pi
+        case PI_CHAR:
+            return PI;
+
+        // primary is euler's constant
+        case EULER_CONSTANT_CHAR:
+            return EULER_CONSTANT;
+
+        // primary is a log function
+        case 'l':
+            {
+                std::string log{};
+                std::cin.unget();
+                char ch;
+                for(int i=0; i<3; i++) {
+                    std::cin >> ch;
+                    log+=ch;
+                }
+                if(log=="log")
+                    return std::log(primary());
+                else
+                    throw std::runtime_error("bad format in log function");
+            }
+
+        case 'r':
+            {
+                char c;
+                std::cin >>c;
+                if(c=='t') {
+                    double d = primary();
+                    if(d<0)
+                        throw std::runtime_error("root function cannot have negative argument");
+                    else
+                        return std::sqrt(d);
+                }
+                else
+                    throw std::runtime_error("bad format");
+            }
+
+        // some error occured
+        default:
+            throw std::runtime_error("bad format");
     }
-    else if(token.kind==num_kind)
-        return token.value;
-    else
-        throw std::runtime_error("bad format");
 }
+
+
+// handles the number converting operation
+void numberConverter() {
+    int choice1{0},choice2{0};
+    // Print options for the user
+    std::cout << "1. Binary" << std::endl;
+    std::cout << "2. Octal" << std::endl;
+    std::cout << "3. Decimal" << std::endl;
+    std::cout << "4. Hexadecimal" << std::endl;
+
+    // Get first option
+    std::cout << "Number system you want to convert from: ";
+    while(std::cin >> choice1) {
+        if(choice1<1 || choice1>4)
+            std::cout << "Please enter an appropriate option" << std::endl;
+        else
+            break;
+    }
+
+    // Get second option
+    std::cout << "Number system you want to convert to: ";
+    while(std::cin >> choice2) {
+        if(choice2<1 || choice2>4)
+            std::cout << "Please enter an appropriate option" << std::endl;
+        else
+            break;
+    }
+
+    std::cout << "Enter the number: " << std::endl;
+    
+    // Input loop
+    while(true) {
+        std::cout << PROMPT;
+        int num{0};     char ch{0};
+        std::cin >> ch;
+
+        // handle the quit operation
+        if(isalpha(ch)) {
+            if(ch=='q')
+                return;
+            else
+                throw std::runtime_error("Invalid input");
+        }
+        // user entered a number
+        else {
+            std::cin.unget();
+            std::cin >> num;
+        }
+
+        std::cout << RESULT << convertNumTo(num,choice1,choice2) << std::endl;
+    }
+}
+
+// number converter
+std::string convertNumTo(int num, int choice1, int choice2) {
+    if(choice1==3) {
+        if(choice2==3)
+            return std::to_string(num);
+        else {
+            int base{0};
+            switch(choice2) {
+                case 1:
+                    base = 2;
+                    break;
+                case 2:
+                    base = 8;
+                    break;
+                case 4:
+                    base = 16;
+                    break;
+                default:
+                    throw std::runtime_error("unknown base of number system");
+            }
+            return fromDecimalTo(num,base);
+        }
+    }
+    else {
+        if(choice2==3) {
+            int base{0};
+            switch(choice1) {
+                case 1:
+                    base = 2;
+                    break;
+                case 2:
+                    base = 8;
+                    break;
+                case 4:
+                    base = 16;
+                    break;
+                default:
+                    throw std::runtime_error("unknown base of number system");
+            }
+            return toDecimalFrom(num,base);
+        }
+        else {
+            int base1{0},base2{0};
+            switch(choice1) {
+                case 1:
+                    base1 = 2;
+                    break;
+                case 2:
+                    base1 = 8;
+                    break;
+                case 4:
+                    base1 = 16;
+                    break;
+                default:
+                    throw std::runtime_error("unknown base of number system");
+            }
+            switch(choice2) {
+                case 1:
+                    base2 = 2;
+                    break;
+                case 2:
+                    base2 = 8;
+                    break;
+                case 4:
+                    base2 = 16;
+                    break;
+                default:
+                    throw std::runtime_error("unknown base of number system");
+            }
+            std::string numstr = toDecimalFrom(num,base1);
+            return fromDecimalTo(std::stoi(numstr),base2);
+        }
+    }
+}
+
+std::string fromDecimalTo(int num, int base) {
+    int i{1},temp{0};
+    std::string numstr{0};
+    if(num==0) return std::string{"0"};
+    while(num>0) {
+        temp = num%base;
+        num = num/base;
+        numstr = std::to_string(temp) + numstr;
+        if(i%4==0) numstr = " " + numstr;
+        i++;
+    }
+    return numstr;
+}
+
+std::string toDecimalFrom(int num, int base) {
+    int temp{0},newnum{0},i{0};
+    while(num>0) {
+        temp = num%base;
+        num = num/base;
+        newnum = newnum + pow(base,i);
+        i++;
+    }
+
+    return std::to_string(newnum);
+}
+
 
 // ask whether to continue or exit when an error occurs
 bool ask() {
     while(true) {
-    // std::cout << line << std::endl;
+
     std::cout << "Do you want to continue(y/n)?" << std::endl;
-    std::cout << line << std::endl;
+    printline();
     char choice;
-    std::cout << prompt;
+    std::cout << PROMPT;
     std::cin >> choice;
-    std::cin.ignore(10,'\n');
+
+    std::cin.ignore(10,'\n');   // ignore the remaining data
+
     switch(choice) {
         case 'y':
         case 'Y':
@@ -179,10 +412,57 @@ bool ask() {
             return 1;
 
         default:
-            std::cout << line << std::endl;
+            printline();
             std::cout << "Incorrect choice" << std::endl;
-            // std::cout << line << std::endl;
             break;
         }
     }
+}
+
+// print a line
+void printline() {
+    std::cout << LINE << std::endl;
+}
+
+// handle the expression calculation part
+bool calculate() {
+    std::cout << "Expression calculator program" << std::endl;
+    std::cout << "Please enter the expression you want to calculate below" << std::endl;
+    std::cout << "(NOTE: Enter q to QUIT and ; after the end of an expression)" << std::endl;
+
+    while(true) {
+    try {
+        printline();
+        std::cout << PROMPT;
+        Token token=ts.get();
+
+        // check whether input is expression or QUIT command
+        if(token.kind==QUIT)
+            return false;   // exit
+        else if(token.kind==TERMINATOR)
+            continue;   // read another expression
+        else
+            ts.unget(token);    // input is expression, unget and read expression()
+
+        // calculate the expression
+        double ans = expression();
+        ts.flush();             // flush out remaining TERMINATOR(';')
+
+        std::cout << RESULT << std::fixed << std::setprecision(5) << ans << std::endl;  // print the RESULT
+    }
+    catch(std::runtime_error &e) {
+        printline();
+        std::cout << "Error! ";
+        std::cout << e.what() << std::endl;
+        printline();
+
+        std::cin.ignore(100,'\n');    // ignore until ; is reached
+        ts.flush();             // flush buffer
+
+        bool exit = ask();     // to continue or exit program?
+        if(exit)
+            break;
+        }
+    }
+    return true;
 }
