@@ -37,6 +37,7 @@ Input comes from cin through the Token_stream called ts
 #include <iomanip>
 
 #include "Token.h"
+#include "numsystem.h"
 
 
 using namespace std;
@@ -51,9 +52,11 @@ int main() {
     // Choice list
     cout << "1. Expression calculator" << endl;
     cout << "2. Number system converter" << endl;
-    cout << "?. Unit converter(Coming soon)" << endl;
-    cout << "?. Matrix mathematics(Coming soon)" << endl;
-    cout << "?. Vector mathematics(Coming soon)" << endl;
+    cout << "?. Bitwise arithmetic(COMING SOON)" << endl;
+    cout << "?. Unit converter(COMING SOON)" << endl;
+    cout << "?. Matrix mathematics(COMING SOON)" << endl;
+    cout << "?. Vector mathematics(COMING SOON)" << endl;
+    cout << "?. Complex Mathematics(COMING SOON))" << endl;
     printline();
     cout << "Please enter your choice: " << endl;
 
@@ -65,7 +68,7 @@ int main() {
         if(ch=='q')
             return 0;
         else
-            throw runtime_error("Inppropriate choice");
+            throw runtime_error("Inappropriate choice");
     }
     else if(isdigit(ch)) {
         cin.unget();
@@ -91,8 +94,8 @@ try {
             break;
     }
 }
-catch(...) {
-    cout << "Some unknown error occured" << endl;
+catch(runtime_error& e) {
+    cout << e.what() << endl;
     return 1;
 }
 

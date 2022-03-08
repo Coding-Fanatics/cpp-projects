@@ -22,11 +22,6 @@ const std::string LINE  = "-----------------------------------------------------
 const int CALCULATE = 1;
 const int NUMBER = 2;
 
-const int BINARY_BASE = 2;
-const int OCTAL_BASE = 8;
-const int DECIMAL_BASE = 10;
-const int HEXADECIMAL_BASE = 16;
-
 // Scientific constants
 const double PI = 3.14159265359;            // pi
 const double EULER_CONSTANT  = 2.71828;     // e
@@ -57,27 +52,13 @@ public:
 
 extern Token_stream ts; // used for input output of tokens in the program
 
-enum class numSystem{
-    binary=2,
-    octal=8,
-    decimal=10,
-    hexadecimal=16
-};
-
-
 // parser functions
 double expression();    // read an expression
 double term();          // read a term
 double primary();       // read a primary
 
-// number converter
-void numberConverter();         // handles the number conversion option
-std::string convertNumTo(int num, int choice1, int choice2);    // to be implemented
-std::string fromDecimalTo(int num, int base);        // convert decimal to a number of given base
-std::string toDecimalFrom(int num, int base);          // convert a number of given base to decimal
 
-// ask user whether to continue or exit program when an error occurs
-bool ask();
+bool ask();     // ask user whether to continue or exit program when an error occurs
 void printline();       // print a line
 
 bool calculate();       // handles the expression calculation option

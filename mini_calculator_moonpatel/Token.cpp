@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <cmath>
+
 #include "Token.h"
 
 //=====================================================================================
@@ -190,7 +191,7 @@ double primary() {
         case NUM_KIND:
             return token.value;
 
-        // primary id pi
+        // primary is pi
         case PI_CHAR:
             return PI;
 
@@ -233,160 +234,6 @@ double primary() {
         default:
             throw std::runtime_error("bad format");
     }
-}
-
-
-// handles the number converting operation
-void numberConverter() {
-    int choice1{0},choice2{0};
-    // Print options for the user
-    std::cout << "1. Binary" << std::endl;
-    std::cout << "2. Octal" << std::endl;
-    std::cout << "3. Decimal" << std::endl;
-    std::cout << "4. Hexadecimal" << std::endl;
-
-    // Get first option
-    std::cout << "Number system you want to convert from: ";
-    while(std::cin >> choice1) {
-        if(choice1<1 || choice1>4)
-            std::cout << "Please enter an appropriate option" << std::endl;
-        else
-            break;
-    }
-
-    // Get second option
-    std::cout << "Number system you want to convert to: ";
-    while(std::cin >> choice2) {
-        if(choice2<1 || choice2>4)
-            std::cout << "Please enter an appropriate option" << std::endl;
-        else
-            break;
-    }
-
-    std::cout << "Enter the number: " << std::endl;
-    
-    // Input loop
-    while(true) {
-        std::cout << PROMPT;
-        int num{0};     char ch{0};
-        std::cin >> ch;
-
-        // handle the quit operation
-        if(isalpha(ch)) {
-            if(ch=='q')
-                return;
-            else
-                throw std::runtime_error("Invalid input");
-        }
-        // user entered a number
-        else {
-            std::cin.unget();
-            std::cin >> num;
-        }
-
-        std::cout << RESULT << convertNumTo(num,choice1,choice2) << std::endl;
-    }
-}
-
-// number converter
-std::string convertNumTo(int num, int choice1, int choice2) {
-    if(choice1==3) {
-        if(choice2==3)
-            return std::to_string(num);
-        else {
-            int base{0};
-            switch(choice2) {
-                case 1:
-                    base = 2;
-                    break;
-                case 2:
-                    base = 8;
-                    break;
-                case 4:
-                    base = 16;
-                    break;
-                default:
-                    throw std::runtime_error("unknown base of number system");
-            }
-            return fromDecimalTo(num,base);
-        }
-    }
-    else {
-        if(choice2==3) {
-            int base{0};
-            switch(choice1) {
-                case 1:
-                    base = 2;
-                    break;
-                case 2:
-                    base = 8;
-                    break;
-                case 4:
-                    base = 16;
-                    break;
-                default:
-                    throw std::runtime_error("unknown base of number system");
-            }
-            return toDecimalFrom(num,base);
-        }
-        else {
-            int base1{0},base2{0};
-            switch(choice1) {
-                case 1:
-                    base1 = 2;
-                    break;
-                case 2:
-                    base1 = 8;
-                    break;
-                case 4:
-                    base1 = 16;
-                    break;
-                default:
-                    throw std::runtime_error("unknown base of number system");
-            }
-            switch(choice2) {
-                case 1:
-                    base2 = 2;
-                    break;
-                case 2:
-                    base2 = 8;
-                    break;
-                case 4:
-                    base2 = 16;
-                    break;
-                default:
-                    throw std::runtime_error("unknown base of number system");
-            }
-            std::string numstr = toDecimalFrom(num,base1);
-            return fromDecimalTo(std::stoi(numstr),base2);
-        }
-    }
-}
-
-std::string fromDecimalTo(int num, int base) {
-    int i{1},temp{0};
-    std::string numstr{0};
-    if(num==0) return std::string{"0"};
-    while(num>0) {
-        temp = num%base;
-        num = num/base;
-        numstr = std::to_string(temp) + numstr;
-        if(i%4==0) numstr = " " + numstr;
-        i++;
-    }
-    return numstr;
-}
-
-std::string toDecimalFrom(int num, int base) {
-    int temp{0},newnum{0},i{0};
-    while(num>0) {
-        temp = num%base;
-        num = num/base;
-        newnum = newnum + pow(base,i);
-        i++;
-    }
-
-    return std::to_string(newnum);
 }
 
 
