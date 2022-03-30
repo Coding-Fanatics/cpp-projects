@@ -3,6 +3,7 @@
 #include <cmath>
 
 #include "Token.h"
+#include "utils.h"
 
 //=====================================================================================
 // Token class member functions
@@ -266,10 +267,6 @@ bool ask() {
     }
 }
 
-// print a line
-void printline() {
-    std::cout << LINE << std::endl;
-}
 
 // handle the expression calculation part
 bool calculate() {
