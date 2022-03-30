@@ -5,47 +5,65 @@
 
 #include "Token.h"
 #include "numsystem.h"
+#include "utils.h"
+
+void printNumConverterMainMenu() {
+    // print the number converter menu
+    std::cout << "1. Binary" << "\n";
+    std::cout << "2. Octal" << "\n";
+    std::cout << "3. Decimal" << "\n";
+    std::cout << "4. Hexadecimal" << "\n";
+}
 
 // handles the number converting operation
 void numberConverter() {
+    char ch{0};
     char type1{0},type2{0};
-    // Print options for the user
-    std::cout << "1. Binary" << std::endl;
-    std::cout << "2. Octal" << std::endl;
-    std::cout << "3. Decimal" << std::endl;
-    std::cout << "4. Hexadecimal" << std::endl;
+    printNumConverterMainMenu();
 
     // Get first option
-    std::cout << "Number system you want to convert from: ";
-    while(std::cin >> type1) {
-        if(type1<BINARY || type1>HEXADECIMAL){
-            std::cout << "Please enter an appropriate option" << std::endl;
-            printline();
-            std::cout << "Number system you want to convert from: ";
+    std::cout << "Convert from: ";
+    while(std::cin >> ch) {
+        if(ch=='q')
+            return;
+        else {
+            if(ch<BINARY || ch>HEXADECIMAL) {
+                clearScreen();
+                printNumConverterMainMenu();
+                std::cout << "Convert from:";
+            }
+            else {
+                type1 = ch;
+                break;  // choice is correct, move ahead
+            }
         }
-        else
-            break;  // choice is correct move ahead
     }
 
     // Get second option
-    std::cout << "Number system you want to convert to: ";
-    while(std::cin >> type2) {
-        if(type2<BINARY || type2>HEXADECIMAL) {
-            std::cout << "Please enter an appropriate option" << std::endl;
-            printline();
-            std::cout << "Number system you want to convert to: ";
+    std::cout << "Convert to: ";
+    while(std::cin >> ch) {
+        if(ch=='q')
+            return;
+        else {
+            if(ch<BINARY || ch>HEXADECIMAL) {
+                clearScreen();
+                printNumConverterMainMenu();
+                std::cout << "Convert from: " << type1 << "\n";
+                std::cout << "Convert to: ";
+            }
+            else {
+                type2 = ch;
+                break;  // choice is correct, move ahead
+            }
         }
-        else
-            break;  // choice is correct move ahead
     }
 
-    std::cout << "Enter the number: " << std::endl;
+    printline();
 
     // Input loop
     while(true) {
-label1:
-        std::cout << PROMPT;
-        std::string num{0};     char ch{0};
+        std::cout << PROMPT << " ";
+        std::string num{0};
         std::cin >> ch;
 
         // handle the quit operation
@@ -62,19 +80,19 @@ label1:
     try {
         switch(type1) {
             case BINARY:
-                std::cout << RESULT << convertBinTo(num,type2) << std::endl;
+                std::cout << RESULT << convertBinTo(num,type2) << "\n";
                 printline();
                 break;
             case OCTAL:
-                std::cout << RESULT << convertOctTo(num,type2) << std::endl;
+                std::cout << RESULT << convertOctTo(num,type2) << "\n";
                 printline();
                 break;
             case DECIMAL:
-                std::cout << RESULT << convertDecTo(num,type2) << std::endl;
+                std::cout << RESULT << convertDecTo(num,type2) << "\n";
                 printline();
                 break;
             case HEXADECIMAL:
-                std::cout << RESULT << convertHexTo(num,type2) << std::endl;
+                std::cout << RESULT << convertHexTo(num,type2) << "\n";
                 printline();
                 break;
         }
@@ -288,7 +306,7 @@ std::string binToDec(std::string num) {
 }
 
 
-// chaecking functions
+// checking functions
 
 // check if num is binary
 bool isBinary(std::string num) {
@@ -325,9 +343,11 @@ bool isHexadecimal(std::string num) {
 // format the binary number
 std::string formatBinary(std::string num) {
     std::string result{};
-    int size = num.size();
 
-    for(int i=size-1; i>=0;) {
+    while(num.size()%4!=0)
+        num = "0" + num;
+
+    for(int i=num.size()-1; i>=0;) {
         int count = 4;
         while(i>=0 && count>0)  {
             result = num[i] + result;
