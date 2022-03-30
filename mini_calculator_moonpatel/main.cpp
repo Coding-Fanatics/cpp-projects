@@ -1,9 +1,11 @@
 /*
-Simple calculator.
+Calculator program
+Includes the following facilities:
+1. Expression calculator
+2. Number system conversion
+(More features coming soon)
 
-This program implements a simple calculator.
-
-==========================GRAMMAR==========================
+==================GRAMMAR FOR EXPRESSION CALCULATOR===============
 Expression:
     Term
     Term + Expression
@@ -15,19 +17,27 @@ Term:
     Primary / Term
 
 Primary:
+    -Number
     Number
+    constants like pi, e and so on
     '('Expression')'
-    
+    -'('Expression')'
+
 Number:
     Floating point literal
     Integer
+    results of functions like log(a,b), rt(a)
 
 Input comes from cin through the Token_stream called ts
 
 */
 
 #include <iostream>
+#include <iomanip>
+
 #include "Token.h"
+#include "numsystem.h"
+#include "utils.h"
 
 
 using namespace std;
@@ -36,47 +46,40 @@ Token_stream ts;
 
 
 int main() {
-
-    // Welcome message
-    cout << "WELCOME" << endl;
-    cout << "This is a simple calculator program" << endl;
-    cout << "Please enter the expression you want to calculate below" << endl;
-    cout << "(NOTE: Enter q to quit and ; after the end of an expression)" << endl;
+    // welcome message
+    cout << "WELCOME" << "\n";
 
     while(true) {
+        // print main menu and get user choice
+        int choice = mainMenu();
+    // do what the input says
     try {
-        cout << line << endl;
-        cout << prompt;
-        Token token=ts.get();
+        switch(choice) {
+            // handles calculation
+            case CALCULATE_EXPRESSION:
+                if(!calculate())
+                    return 0;
+                break;
 
-        // check whether input is expression or quit command
-        if(token.kind==quit)
-            return 0;   // exit
-        else if(token.kind==terminator)
-            continue;   // read another expression
-        else
-            ts.unget(token);    // input is expression, unget and read expression()
+            // handles number conversion
+            case NUMBER_SYSTEM:
+                numberConverter();
+                break;
 
-        // calculate the expression
-        double ans = expression();
-        ts.flush();             // flush out remaining terminator(';')
+            // quit the program
+            case 0:
+                return 0;
 
-        cout << result << ans << endl;  // print the result
-    }
-    catch(runtime_error &e) {
-        cout << line << endl;
-        cout << "Error! ";
+            default:
+            // to be done later
+                break;
+            }
+        }
+    catch(runtime_error& e) {
         cout << e.what() << endl;
-        cout << line << endl;
-
-        cin.ignore(100,'\n');    // ignore until ; is reached
-        ts.flush();             // flush buffer
-
-        bool exit = ask();     // to continue or exit program?
-        if(exit)
-            break;
+        return 1;
+        }
     }
-}
 
     return 0;
 }
