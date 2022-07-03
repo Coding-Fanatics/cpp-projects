@@ -38,6 +38,7 @@ Input comes from cin through the Token_stream called ts
 #include "Token.h"
 #include "numsystem.h"
 #include "utils.h"
+#include "matrix.h"
 
 
 using namespace std;
@@ -48,6 +49,8 @@ Token_stream ts;
 int main() {
     // welcome message
     cout << "WELCOME" << "\n";
+    int num;
+    cin >> num;
 
     while(true) {
         // print main menu and get user choice
@@ -64,6 +67,11 @@ int main() {
             // handles number conversion
             case NUMBER_SYSTEM:
                 numberConverter();
+                break;
+
+            // handles matrix calculations
+            case MATRIX_CALC:
+                matrixCalc();
                 break;
 
             // quit the program

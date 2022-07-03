@@ -21,6 +21,7 @@ const std::string LINE  = "-----------------------------------------------------
 
 const int CALCULATE_EXPRESSION = 1;
 const int NUMBER_SYSTEM = 2;
+const int MATRIX_CALC = 3;
 
 // Scientific constants
 const double PI = 3.14159265359;            // pi

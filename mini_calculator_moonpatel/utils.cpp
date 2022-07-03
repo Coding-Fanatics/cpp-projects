@@ -16,7 +16,7 @@ int mainMenu() {
     printline();
 
     // ask for choice
-    cout << "Enter your choice: ";
+    cout << "-> ";
 
     // Take input from user
     char ch{0};
@@ -31,7 +31,7 @@ int mainMenu() {
     else if(isdigit(ch)) {
         cin.unget();
         cin >> choice;
-        if(choice<0||choice>2)
+        if(choice<0||choice>3)
             throw std::runtime_error("Inappropriate choice");
     }
 
@@ -50,9 +50,9 @@ void printMainMenu() {
     // Choice list
     cout << "1. Expression calculator" << "\n";
     cout << "2. Number system converter" << "\n";
+    cout << "3. Matrix calculator(IN PRODUCTION)" << "\n";
     cout << "?. Bitwise arithmetic(COMING SOON)" << "\n";
     cout << "?. Unit converter(COMING SOON)" << "\n";
-    cout << "?. Matrix mathematics(COMING SOON)" << "\n";
     cout << "?. Vector mathematics(COMING SOON)" << "\n";
     cout << "?. Complex Mathematics(COMING SOON))" << "\n";
 }
