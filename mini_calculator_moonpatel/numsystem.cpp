@@ -355,7 +355,7 @@ std::string formatBinary(std::string num) {
             i--;
         }
         if(i!=0)
-            result = " " + result;
+            result = "," + result;
     }
     return result;
 }
