@@ -39,6 +39,9 @@ const char OCTAL        = '2';
 const char DECIMAL      = '3';
 const char HEXADECIMAL  = '4';
 
+const char LET = 'L';
+const char NAME = 'N';
+const std::string declaration_keyword = "let";
 
 // handle the processes of the main menu and return the choice entered
 int mainMenu();
