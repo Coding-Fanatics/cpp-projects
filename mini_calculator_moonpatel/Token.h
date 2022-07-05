@@ -29,6 +29,7 @@ Input comes from cin through the Token_stream called ts
 #define _TOKEN_H_
 
 #include <string>
+#include <queue>
 
 
 // Token class has two members kind and value
@@ -38,15 +39,18 @@ class Token {
 public:
     char    kind;
     double  value;
+    std::string name;
     Token();
-    Token(char,double); // constructer with args
+    // Token(char,double,std::string); // constructer with args
+    Token(char,double);
+    Token(char,std::string);
 };
 
 // Token stream class which is used to read tokens from the user
 // and also temporarily store users input in its buffer
 class Token_stream {
 private:
-    Token   buffer;       // store the Token in buffer until it is received
+    std::queue<Token>   buffer;       // store the Token in buffer until it is received
     bool    isFull;        // tells whether the buffer is full or not
 public:
     Token_stream();     // Default constructor
@@ -61,8 +65,13 @@ extern Token_stream ts; // used for input output of tokens in the program
 double expression();    // read an expression
 double term();          // read a term
 double primary();       // read a primary
+double declaration();   // read a declaration
+double statement();     // read a statement
+
+bool is_defined(std::string var);
+double define_name(std::string var, double val);
 
 bool ask();     // ask user whether to continue or exit program when an error occurs
-bool calculate();       // handles the expression calculation option
+void calculate();       // handles the expression calculation option
 
 #endif
